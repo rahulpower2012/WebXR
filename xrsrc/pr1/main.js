@@ -1,20 +1,40 @@
 import { initGL, createCubeMesh, createShaderProgram } from './utils.js';
 
 // Global variables
+// --- WebXR Globals ---
 let xrSession = null;
 let gl = null;
-let xrReferenceSpace = null; // We'll need this later
+let xrReferenceSpace = null;
+
+// --- Camera Preview Globals ---
+let mediaStream = null; // Store the camera stream
+let videoElement = null;
 
 // Entry point
 document.addEventListener('DOMContentLoaded', () => {
     alert('document loaded');
     const startButton = document.getElementById('startButton');
     startButton.addEventListener('click', onStartAR);
+
+    // --- Camera Preview Setup ---
+    setupCameraSelection();
+    // The order is important, setup the selection before adding the event.
+    const stopCameraButton = document.getElementById('stopCamera');
+    stopCameraButton.addEventListener('click', stopCameraPreview);
+
+
+    videoElement = document.getElementById('cameraPreview');
+
 });
+
+// --- WebXR Functions ---
 
 async function onStartAR() {
     alert('onStartAR: Attempting to start AR session...');
     console.log("onStartAR: Attempting to start AR session...");
+
+    // Stop any existing camera preview
+    stopCameraPreview();
 
     // 1. Check for XR Feature Availability
     if (!navigator.xr) {
@@ -131,8 +151,8 @@ function onSessionStarted() {
     console.log("onSessionStarted: 'end' event listener added.");
 
     // 5. Start Render Loop (placeholder for now)
-    xrSession.requestAnimationFrame(render);
-    console.log("onSessionStarted: Render loop initiated.");
+    // xrSession.requestAnimationFrame(render);
+    // console.log("onSessionStarted: Render loop initiated.");
 
     // 5. Request Reference Space
     setupReferenceSpace().then(() => {
@@ -173,6 +193,7 @@ function onSessionEnded() {
     console.log("onSessionEnded: Session ended.");
     xrSession = null;
     gl = null;
+    xrReferenceSpace = null;
     // You might want to re-display the "Start AR" button here
     const startButton = document.getElementById('startButton');
     startButton.style.display = 'block';
@@ -196,5 +217,70 @@ function render(timestamp, frame) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, glLayer.framebuffer);
         // Clear the canvas
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    }
+}
+
+
+// --- Camera Preview Functions ---
+
+async function setupCameraSelection() {
+    try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        alert(JSON.stringify(devices));
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+
+        if (videoDevices.length === 0) {
+            throw new Error("No video input devices found.");
+        }
+
+        const cameraSelect = document.getElementById('cameraSelect');
+        videoDevices.forEach(device => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            option.text = device.label || `Camera ${cameraSelect.length + 1}`;
+            cameraSelect.appendChild(option);
+        });
+
+        // Start with the first camera by default.
+        startCameraPreview(videoDevices[0].deviceId);
+
+        // Update the camera preview when the selection changes.
+        cameraSelect.addEventListener('change', () => {
+            startCameraPreview(cameraSelect.value);
+        });
+
+    } catch (error) {
+        console.error("Error setting up camera selection:", error);
+        alert(`Error setting up camera selection: ${error.message}`);
+    }
+}
+async function startCameraPreview(deviceId) {
+    // Stop any existing stream before starting a new one.
+    stopCameraPreview();
+
+    try {
+        const constraints = {
+            video: {
+                deviceId: { exact: deviceId },  // Use 'exact' to specify the deviceId
+                width: { ideal: 640 },       // Request a specific resolution (optional)
+                height: { ideal: 480 }
+            }
+        };
+
+        mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoElement.srcObject = mediaStream;
+        videoElement.play(); // Ensure it plays, sometimes autoplay doesn't work
+
+    } catch (error) {
+        console.error("Error starting camera preview:", error);
+         alert(`Error starting camera preview: ${error.message}`);
+    }
+}
+
+function stopCameraPreview() {
+    if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream = null;
+        videoElement.srcObject = null; // Clear the srcObject
     }
 }

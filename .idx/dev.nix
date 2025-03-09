@@ -4,8 +4,8 @@
 
   # Use https://search.nixos.org/packages to find packages
   packages = [
-    pkgs.nodejs_18
     pkgs.nodePackages.http-server
+    pkgs.nodejs_20
   ];
 
   # Sets environment variables in the workspace
@@ -30,6 +30,7 @@
           "0.0.0.0"
         ];
         manager = "web";
+        # cwd = "~/learn-webxr";
       };
       # pr1 = {
       #   command = [

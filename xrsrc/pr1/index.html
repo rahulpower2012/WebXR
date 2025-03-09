@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebXR Cube Placer</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" type="text/css href="style.css">
 </head>
 <body>
     <button id="startButton">Start AR</button>
     <canvas id="glCanvas"></canvas>
+
+    <div id="cameraControls">
+        <label for="cameraSelect">Camera:</label>
+        <select id="cameraSelect"></select>
+        <button id="stopCamera">Stop Camera</button>
+    </div>
+    <video id="cameraPreview" autoplay playsinline></video>
 
     <script type ="module" src="main.js"></script>
 </body>
