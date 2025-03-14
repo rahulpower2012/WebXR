@@ -12,7 +12,7 @@ let videoElement = null;
 
 // Entry point
 document.addEventListener('DOMContentLoaded', () => {
-    alert('document loaded');
+    // <commneted-for-test> alert("document loaded");
     const startButton = document.getElementById('startButton');
     startButton.addEventListener('click', onStartAR);
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- WebXR Functions ---
 
 async function onStartAR() {
-    alert('onStartAR: Attempting to start AR session...');
+    // <commneted-for-test> alert("onStartAR: Attempting to start AR session...");
     console.log("onStartAR: Attempting to start AR session...");
 
     // Stop any existing camera preview
@@ -46,7 +46,7 @@ async function onStartAR() {
 
     // 2. Check for 'immersive-ar' Session Support
     try {
-        alert("onStartAR: Checking for immersive-ar support...");
+        // <commneted-for-test> alert("onStartAR: Checking for immersive-ar support...");
         const isSupported = await navigator.xr.isSessionSupported('immersive-ar');
         if (!isSupported) {
             const errorMessage = "Immersive AR mode is not supported on this device or browser.";
@@ -64,7 +64,7 @@ async function onStartAR() {
 
     // 3. Request an 'immersive-ar' XR Session
     try {
-        alert("onStartAR: Requesting XR session...");
+        // <commneted-for-test> alert("onStartAR: Requesting XR session...");
         xrSession = await navigator.xr.requestSession('immersive-ar', {
             requiredFeatures: ['hit-test', 'dom-overlay'],
             domOverlay: { root: document.body }
@@ -93,21 +93,21 @@ async function onStartAR() {
 
 function onSessionStarted() {
     console.log("onSessionStarted: Session started. Setting up...");
-    alert("onSessionStarted: Session started. Setting up...");
+    // <commneted-for-test> alert("onSessionStarted: Session started. Setting up...");
 
     // 1. Hide Start Button
     const startButton = document.getElementById('startButton');
     startButton.style.display = 'none';
     console.log("onSessionStarted: Start button hidden.");
-    alert("onSessionStarted: Start button hidden.");
+    // <commneted-for-test> alert("onSessionStarted: Start button hidden.");
 
     // 2. Initialize WebGL
     const canvas = document.getElementById('glCanvas');
     try {
-        alert("onSessionStarted: Attempting to get webgl context...");
+        // <commneted-for-test> alert("onSessionStarted: Attempting to get webgl context...");
         gl = canvas.getContext('webgl', { xrCompatible: true });
     } catch (error) {
-        alert("onSessionStarted: Error getting webgl context...");
+        // <commneted-for-test> alert("onSessionStarted: Error getting webgl context...");
         const errorMessage = `Error getting webgl context: ${error}`;
         console.error(errorMessage);
         alert(errorMessage);
@@ -120,22 +120,22 @@ function onSessionStarted() {
         alert(errorMessage);
         return;  // Critical error: Cannot continue without WebGL.
     } else {
-        alert("onSessionStarted: WebGL initialized.");
+        // <commneted-for-test> alert("onSessionStarted: WebGL initialized.");
     }
 
     // Set clear color and enable depth testing
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.enable(gl.DEPTH_TEST);
 
     initGL(gl); // For future use
-    alert("onSessionStarted: WebGL initialized.");
+    // <commneted-for-test> alert("onSessionStarted: WebGL initialized.");
     console.log("onSessionStarted: WebGL initialized.");
 
     // 3. Set XRWebGLLayer as the Base Layer
     try {
         const xrLayer = new XRWebGLLayer(xrSession, gl);
         xrSession.updateRenderState({ baseLayer: xrLayer });
-        alert("onSessionStarted: XRWebGLLayer created and set as base layer.");
+        // <commneted-for-test> alert("onSessionStarted: XRWebGLLayer created and set as base layer.");
         console.log("onSessionStarted: XRWebGLLayer created and set as base layer.");
     } catch (error) {
         const errorMessage = `Error creating or setting XRWebGLLayer: ${error}`;
@@ -155,10 +155,10 @@ function onSessionStarted() {
     // console.log("onSessionStarted: Render loop initiated.");
 
     // 5. Request Reference Space
-    setupReferenceSpace().then(() => {
+    setupReferenceSpace().then(async() => {
         // 6. Start Render Loop (Now that we have a reference space)
-        xrSession.requestAnimationFrame(render);
-        alert("onSessionStarted: Render loop initiated.");
+        await xrSession.requestAnimationFrame(render);
+        // <commneted-for-test> alert("onSessionStarted: Render loop initiated.");
         console.log("onSessionStarted: Render loop initiated.");
 
     });
@@ -167,16 +167,16 @@ function onSessionStarted() {
 async function setupReferenceSpace() {
     try {
         xrReferenceSpace = await xrSession.requestReferenceSpace('local-floor');
-        alert("setupReferenceSpace: 'local-floor' reference space obtained.");
+        // <commneted-for-test> alert("setupReferenceSpace: 'local-floor' reference space obtained.");
         console.log("setupReferenceSpace: 'local-floor' reference space obtained.");
     } catch (error) {
         // If 'local-floor' is not available, try 'local'
-        alert("setupReferenceSpace: 'local-floor' reference space not available, trying 'local'...");
+        // <commneted-for-test> alert("setupReferenceSpace: 'local-floor' reference space not available, trying 'local'...");
         console.warn("setupReferenceSpace: 'local-floor' reference space not available, trying 'local'...", error);
         try {
             xrReferenceSpace = await xrSession.requestReferenceSpace('local');
             if(xrReferenceSpace){
-                alert("setupReferenceSpace: 'local' reference space obtained.");
+                // <commneted-for-test> alert("setupReferenceSpace: 'local' reference space obtained.");
                 console.log("setupReferenceSpace: 'local' reference space obtained.");
             }
         } catch (localError) {
@@ -189,7 +189,7 @@ async function setupReferenceSpace() {
 }
 
 function onSessionEnded() {
-    alert("onSessionEnded: Session ended.");
+    // <commneted-for-test> alert("onSessionEnded: Session ended.");
     console.log("onSessionEnded: Session ended.");
     xrSession = null;
     gl = null;
@@ -202,7 +202,7 @@ function onSessionEnded() {
 function render(timestamp, frame) {
     if (!frame) {
         console.log("render: No frame available.");
-        alert("render: No frame available. Stopping session.")
+        // <commneted-for-test> alert("render: No frame available. Stopping session.")
         return;
     }
 
@@ -213,10 +213,16 @@ function render(timestamp, frame) {
     xrSession.requestAnimationFrame(render);
 
     if (pose) {
+        // <commneted-for-test> alert("render: Pose obtained. Clearing canvas...");
+        console.log("render: Pose obtained. Clearing canvas...");
+        // Clear the canvas
         let glLayer = xrSession.renderState.baseLayer;
         gl.bindFramebuffer(gl.FRAMEBUFFER, glLayer.framebuffer);
         // Clear the canvas
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    } else {
+        // <commneted-for-test> alert("render: No pose available.");
+        console.log("render: No pose available.");
     }
 }
 
@@ -225,24 +231,31 @@ function render(timestamp, frame) {
 
 async function setupCameraSelection() {
     try {
+        // 1. Request "Dummy" Permission (Initial Stream)
+        const tempStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+
+        // 2. Enumerate Devices (After Permission)
         const devices = await navigator.mediaDevices.enumerateDevices();
-        alert(JSON.stringify(devices));
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        // Immediately stop the temporary stream.
+        tempStream.getTracks().forEach(track => track.stop());
 
         if (videoDevices.length === 0) {
             throw new Error("No video input devices found.");
         }
 
         const cameraSelect = document.getElementById('cameraSelect');
+		//Clear previous options
+		cameraSelect.innerHTML = '';
         videoDevices.forEach(device => {
             const option = document.createElement('option');
             option.value = device.deviceId;
-            option.text = device.label || `Camera ${cameraSelect.length + 1}`;
+            option.text = device.label || `Camera ${cameraSelect.options.length + 1}`;
             cameraSelect.appendChild(option);
         });
 
-        // Start with the first camera by default.
-        startCameraPreview(videoDevices[0].deviceId);
+        // 3. Start Preview (User Selection - Initially, the first camera)
+        startCameraPreview(videoDevices[2].deviceId); // Start with the first camera
 
         // Update the camera preview when the selection changes.
         cameraSelect.addEventListener('change', () => {
