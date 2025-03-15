@@ -1,29 +1,31 @@
 body {
   margin: 0;
-  overflow: hidden; /* Hide scrollbars */
+  overflow: hidden; /* Prevent scrollbars */
 }
 
 #glCanvas {
   width: 100vw;
   height: 100vh;
-  display: block; /* Remove any extra spacing */
-}
-
-#cameraControls {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 10; /* Ensure it's above the canvas */
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 10px;
-  border-radius: 5px;
+  display: block;
+  position: absolute; /* Important for overlaying */
+  top: 0;
+  left: 0;
 }
 
 #cameraPreview {
   position: absolute;
-  top: 80px;
+  top: 10px; /* Adjust as needed */
   left: 10px;
-  width: 320px;
+  width: 320px; /* Or whatever size you prefer */
   height: 240px;
-  z-index: 9; /* Ensure it's on the top, but can be beneath controls*/
+  z-index: 1;   /* Below UI, above canvas */
+  display: none; /* Initially hidden */
 }
+
+#uiContainer {
+  position: absolute; /* Position over the canvas */
+  top: 10px;
+  left: 10px;
+  z-index: 2;    /* Ensure UI is on top */
+}
+
