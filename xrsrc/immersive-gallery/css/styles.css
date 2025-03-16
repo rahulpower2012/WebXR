@@ -1,0 +1,14 @@
+#camera-feed-container,
+#ar-container {
+    margin-top: 20px;
+    width: 100%;
+    height: 80vh;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#camera-feed-container.d-none,
+#ar-container.d-none {
+    display: none;
+}

@@ -3,18 +3,9 @@ body {
   overflow: hidden; /* Prevent scrollbars */
 }
 
-#glCanvas {
-  width: 100vw;
-  height: 100vh;
-  display: block;
-  position: absolute; /* Important for overlaying */
-  top: 0;
-  left: 0;
-}
-
 #cameraPreview {
   position: absolute;
-  top: 10px; /* Adjust as needed */
+  top: 10px;
   left: 10px;
   width: 320px; /* Or whatever size you prefer */
   height: 240px;
@@ -23,9 +14,8 @@ body {
 }
 
 #uiContainer {
-  position: absolute; /* Position over the canvas */
+  position: absolute; /* Position over the canvas (which Three.js creates) */
   top: 10px;
   left: 10px;
   z-index: 2;    /* Ensure UI is on top */
 }
-
