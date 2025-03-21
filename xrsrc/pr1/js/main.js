@@ -1,12 +1,14 @@
 // import * as THREE from 'three';
 import { startCameraPreview, stopCameraPreview, setupCameraSelection, handleCameraChange } from './camera.js';
-import { startAR, stopAR, initXR } from './xr.js';
+import { startAR, stopAR, init3jsXR } from './xr.js';
+import { logError, setUpLogging } from '../utils.js';
 
 
 // --- Global Variables ---
 let isCameraRunning = false;
 let videoElement;
 let toggleCameraButton;
+let consoleDiv;
 
 // --- DOMContentLoaded Event ---
 /**
@@ -14,6 +16,9 @@ let toggleCameraButton;
  */
 document.addEventListener('DOMContentLoaded', () => {
     // DOM Element References
+    consoleDiv = document.getElementById('consoleDiv');
+    setUpLogging(consoleDiv);
+    logError('error', 'success7');
     const startARButton = document.getElementById('startARButton');
     const stopARButton = document.getElementById('stopARButton');
     const cameraSelect = document.getElementById('cameraSelect');
@@ -23,7 +28,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners
     startARButton.addEventListener('click', () => {
         //Ensure camera stopped when startiing AR
+        logError('rwgrw', 'eefw2');
         stopCameraPreview(videoElement, toggleCameraButton, isCameraRunning);
+        
+        init3jsXR();
 		// Then start XR.
         startAR(startARButton, stopARButton);
 
@@ -37,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCameraSelection(cameraSelect); // Initialize camera selection
 
 	// Initialize XR (but don't start the session yet)
-    initXR();
 });
 
 

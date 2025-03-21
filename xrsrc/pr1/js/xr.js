@@ -1,9 +1,9 @@
+import { logError, setUpLogging } from '../utils.js';
+
 /**
  *  @module xr
  * Handles WebXR AR session management and rendering using Three.js.
  */
-// import * as THREE from 'three';
-// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // --- Module-Level Variables ---
 let xrSession = null;
@@ -61,27 +61,32 @@ export async function stopAR(startARButton, stopARButton) {
 /**
  * Initializes Three.js scene, renderer, camera, and XR session settings.
  */
-export function initXR() { // Call this *before* attempting startAR()
+export function init3jsXR() { // Call this *before* attempting startAR()
     // Three.js Setup
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+    try{
 
-    renderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true // Important for transparent background with AR passthrough
-    });
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.xr.enabled = true;   // Enable WebXR rendering
-    renderer.xr.setReferenceSpaceType('local'); // Or 'local-floor', if available and desired.
-
-    //For debug only
-    //const controls = new OrbitControls( camera, renderer.domElement );
-
-    document.body.appendChild(renderer.domElement);  // Three.js creates and manages the canvas.
-
-       // Handle window resize
-    window.addEventListener('resize', onWindowResize);
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+    
+        renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true // Important for transparent background with AR passthrough
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.xr.enabled = true;   // Enable WebXR rendering
+        renderer.xr.setReferenceSpaceType('local'); // Or 'local-floor', if available and desired.
+    
+        //For debug only
+        //const controls = new OrbitControls( camera, renderer.domElement );
+    
+        document.body.appendChild(renderer.domElement);  // Three.js creates and manages the canvas.
+    
+           // Handle window resize
+        window.addEventListener('resize', onWindowResize);
+    } catch(error){
+        logError(error, 'init3jsXR failed')
+    }
 }
 
 /**
@@ -142,7 +147,7 @@ function setupThreeJsScene() {
    cube = new THREE.Mesh(geometry, material);
    scene.add(cube);
    //Initially make it invisible
-   cube.visible = false;
+//    cube.visible = false; //commneted as cube not visible
 
    // Add some lighting (important for MeshBasicMaterial to be visible if not using flat shading)
    const light = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 1);
@@ -169,12 +174,14 @@ function render(timestamp, frame) {
       if (hitTestResults && hitTestResults.length > 0) {
           const hit = hitTestResults[0];
           const hitPose = hit.getPose(xrReferenceSpace);
-
+            logError({hitTestResults, hitPose}, 'hitpose');
           // Position the cube at the hit test location
           if(hitPose){ // alwas check if is not null
              cube.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z);
-             cube.visible = true; // Make the cube visible
+            //  cube.visible = true; // Make the cube visible
           }
+        } else {
+            logError('no hitpose', 'hitpose');
         }
       }
     renderer.render(scene, camera); // Render the Three.js scene
@@ -210,6 +217,7 @@ async function requestHitTestSource() {
 
     console.log("Hit test source created successfully.");
   } catch (error) {
+    logError(error, 'requestHitTestSource');
     console.error("Failed to create hit test source:", error);
     hitTestActive = false;  // Ensure state is consistent on failure
   }
@@ -234,6 +242,7 @@ function performHitTest(frame) {
  *  Handles 'select' event by activate hit testing process
  */
 function onSelect() {
+    logError('in onselect', 'tap event');
       hitTestActive = true;
 }
 
@@ -261,6 +270,3 @@ function toggleARButtons(startARButton, stopARButton, isARRunning){
       stopARButton.style.display = 'none';
     }
 }
-// Export functions needed by main.js
-// export { startAR, stopAR, initXR };
-

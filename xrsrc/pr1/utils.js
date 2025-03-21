@@ -1,4 +1,18 @@
 // utils.js
+let consoleDiv = null;
+export function setUpLogging(div){
+  consoleDiv = div;
+  logError('setUpLogging', 'success');
+}
+export function logError(error, message) {
+  if(consoleDiv){
+    consoleDiv.innerHTML = document.getElementById('consoleDiv').innerHTML + `<p>${message}: ${error}</p>`
+    console.error(`${message}: ${error.message}`, error);
+  }
+}
+
+
+
 export function initGL(gl) {
     // Initialize WebGL-related settings and buffers
    }

@@ -31,7 +31,7 @@ export function initAR() {
         cube.position.z = -0.5;
         scene.add(cube);
     } catch(error){
-        logError(error, 'initAR failed')
+        // logError(error, 'initAR failed');
     }
 }
 
@@ -69,7 +69,9 @@ export async function startAR(cameraFeed) {
                     }
                 );
         })
-        .catch(error => logError(error, 'Starting AR session failed'));
+        .catch(error => 
+            // logError(error, 'Starting AR session failed')
+        );
 }
 
 /**
@@ -106,7 +108,7 @@ function render(timestamp, frame) {
         }
         xrSession.requestAnimationFrame(render);
     } catch(error){
-        logError(error, 'render failed');
+        // logError(error, 'render failed');
     }
 }
 

@@ -3,7 +3,7 @@
  * @module camera
  */
 
-import { logError } from './utils.js';
+// import { logError } from './utils.js';
 
 let cameraStream = null;
 let currentCameraId = null;
@@ -24,7 +24,9 @@ export function enumerateCameras(cameraSelect) {
                 }
             });
         })
-        .catch(error => logError(error, 'Enumerating cameras failed'));
+        .catch(error => 
+            // logError(error, 'Enumerating cameras failed')
+        );
 }
 
 /**
@@ -43,7 +45,9 @@ export function startCamera(cameraFeed, cameraSelect) {
             document.getElementById('stop-camera-btn').classList.remove('d-none');
             document.getElementById('camera-feed-container').classList.remove('d-none');
         })
-        .catch(error => logError(error, 'Starting camera failed'));
+        .catch(error =>
+            // logError(error, 'Starting camera failed')
+        );
 }
 
 /**
