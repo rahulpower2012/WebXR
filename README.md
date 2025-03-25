@@ -3,3 +3,5 @@ Get started by customizing your environment (defined in the .idx/dev.nix file) w
 Learn more at https://developers.google.com/idx/guides/customize-idx-env
 
 http://127.0.0.1:9002
+
+[pr1](xrsrc/pr1/index.html)
