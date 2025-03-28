@@ -6,6 +6,7 @@ export function setUpLogging(div){
 }
 export function logError(error, message) {
   if(consoleDiv){
+    consoleDiv.innerHTML = `Accept Camera Permissions ------->> Enter some text in the text box <br>------->> Click on "Add Text"<br> ------->> Click on "Start AR" <br>------> Move back slowly with the phone in your hand.`
     consoleDiv.innerHTML = document.getElementById('consoleDiv').innerHTML + `<p>${message}: ${error}</p>`
     console.error(`${message}: ${error.message}`, error);
   }
